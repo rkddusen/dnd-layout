@@ -30,6 +30,7 @@ export default [
       // 추가적인 ESLint 규칙
       'react/react-in-jsx-scope': 'off', // Next.js 사용 시 불필요
       'react-hooks/exhaustive-deps': 'warn', // 의존성 배열 검사
+      '@typescript-eslint/no-explicit-any': 'off',
     },
   },
   prettier,

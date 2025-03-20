@@ -5,11 +5,11 @@ import { Droppable } from './Droppable';
 import { Draggable } from './Draggable';
 
 export const App = () => {
-  const [isDropped, setIsDropped] = useState(false);
+  const [isDropped, setIsDropped] = useState<boolean>(false);
   const draggableMarkup = <Draggable>Drag me</Draggable>;
 
-  const handleDragEnd = (event: DragEndEvent) => {
-    if (event.over && event.over.id === 'droppable') {
+  const handleDragEnd = (event: DragEndEvent): void => {
+    if (event.over?.id === 'droppable') {
       setIsDropped(true);
     }
   };

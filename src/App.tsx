@@ -1,4 +1,4 @@
-import { Home } from './dnd/Home';
+import Home from './dnd/Home';
 
 export const App = () => {
   return (

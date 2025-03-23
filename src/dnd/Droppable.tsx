@@ -5,7 +5,7 @@ interface DroppableProps {
   children: ReactNode;
 }
 
-export const Droppable = ({ children }: DroppableProps) => {
+const Droppable = ({ children }: DroppableProps) => {
   // useDroppable 훅을 사용하여 드랍 가능한 영역을 설정
   // isOver: 사용자가 드래그한 요소가 드랍 가능한 영역 위에 있을 때 true로 변경
   // setNodeRef: 이 요소가 드랍 가능하도록 설정하는 ref
@@ -26,3 +26,5 @@ export const Droppable = ({ children }: DroppableProps) => {
     </div>
   );
 };
+
+export default Droppable;

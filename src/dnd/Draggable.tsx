@@ -5,7 +5,7 @@ interface DraggableProps {
   children: ReactNode;
 }
 
-export const Draggable = ({ children }: DraggableProps) => {
+const Draggable = ({ children }: DraggableProps) => {
   // useDraggable 훅을 사용하여 드래그 가능한 요소 생성
   // setNodeRef: 이 요소가 드래그 가능하도록 설정하는 ref
   // transform: 현재 드래그 중인 요소의 위치 변환 값 ({ x, y } 형태)
@@ -31,3 +31,5 @@ export const Draggable = ({ children }: DraggableProps) => {
     </button>
   );
 };
+
+export default Draggable;

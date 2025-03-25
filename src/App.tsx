@@ -1,4 +1,4 @@
-import Home from './dndLayout/Home';
+import Home from './dndSortable/Home';
 
 export const App = () => {
   return (

@@ -1,1 +1,26 @@
 @import 'tailwindcss';
+@layer base {
+  * {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+  }
+  :root {
+    width: 100%;
+    height: 100%;
+  }
+  body {
+    width: 100%;
+    height: 100dvh;
+    font-family: 'Pretendard';
+    line-height: 1;
+    background-color: #f4f4f0;
+  }
+  li {
+    list-style: none;
+  }
+}
+@theme {
+  --spacing: 1px;
+  --radius-20: 20px;
+}

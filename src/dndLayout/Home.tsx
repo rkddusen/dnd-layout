@@ -64,13 +64,13 @@ const Home = () => {
       <SortableContext items={items} strategy={verticalListSortingStrategy}>
         <ul className="flex flex-col gap-10">
           {items.map((v) => (
-            <SortableItem key={v} id={v} />
+            <SortableItem key={v} id={v} isActive={v === activeId} />
           ))}
         </ul>
       </SortableContext>
       {/* 드래그 중일 때 보여줄 오버레이 */}
       <DragOverlay>
-        {activeId ? <SortableItem id={activeId} /> : null}
+        {activeId ? <SortableItem id={activeId} isActive={false} /> : null}
       </DragOverlay>
     </DndContext>
   );

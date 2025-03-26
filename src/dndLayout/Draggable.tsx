@@ -14,23 +14,31 @@ const Draggable = ({ item }: DraggableProps) => {
   // attributes: ARIA 속성(접근성 지원) 자동 적용
   // id: 해당 요소의 고유 ID. 같은 ID를 가진 요소는 여러 개 있으면 안 됨.
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
-    id: item.id,
+    id: `${item.id}-${item.location}`,
   });
 
   // 드래그 중일 때 요소의 위치를 변환하는 스타일 설정
   // 드래그가 없으면 기본 스타일 유지
-  const style = { transform: CSS.Transform.toString(transform) };
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    width: item.type / 2 <= 1 ? '100%' : 'calc(200% + 10px)',
+    height: item.type % 2 === 0 ? 'calc(200% + 10px)' : '100%',
+  };
 
   return (
-    <div
-      ref={setNodeRef}
-      style={style}
-      {...listeners}
-      {...attributes}
-      className="w-200 h-200 bg-white rounded-20 absolute z-10"
-    >
-      {item.id}
-    </div>
+    <>
+      {item.location === 0 && (
+        <div
+          ref={setNodeRef}
+          style={style}
+          {...listeners}
+          {...attributes}
+          className="bg-white rounded-20 absolute z-10 top-0 left-0"
+        >
+          {item.id}
+        </div>
+      )}
+    </>
   );
 };
 

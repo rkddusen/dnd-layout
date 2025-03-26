@@ -7,24 +7,24 @@ import { Item } from './model/Item';
 
 const InitialItems: Item[][] = [
   [
-    { id: '0', type: 1 },
-    { id: '3', type: 1 },
-    { id: '4', type: 3 },
+    { id: 0, type: 1, location: 0 },
+    { id: 3, type: 1, location: 0 },
+    { id: 4, type: 3, location: 0 },
   ],
   [
-    { id: '1', type: 4 },
-    { id: '1', type: 4 },
-    { id: '4', type: 3 },
+    { id: 1, type: 4, location: 0 },
+    { id: 1, type: 4, location: 2 },
+    { id: 4, type: 3, location: 1 },
   ],
   [
-    { id: '1', type: 4 },
-    { id: '1', type: 4 },
-    { id: '5', type: 1 },
+    { id: 1, type: 4, location: 1 },
+    { id: 1, type: 4, location: 3 },
+    { id: 5, type: 1, location: 0 },
   ],
   [
-    { id: '2', type: 2 },
-    { id: '2', type: 2 },
-    { id: '6', type: 1 },
+    { id: 2, type: 1, location: 0 },
+    { id: 6, type: 2, location: 0 },
+    { id: 6, type: 2, location: 2 },
   ],
 ];
 
@@ -38,7 +38,9 @@ const Home = () => {
       c1 = -1;
     for (let i = 0; i < itemsArr.length; i++) {
       for (let j = 0; j < itemsArr[i].length; j++) {
-        if (itemsArr[i][j]?.id === active.id) {
+        if (
+          itemsArr[i][j]?.id === active.id.toString().split('-').map(Number)[0]
+        ) {
           [c1, r1] = [i, j]; // r1, c1은 항상 동일 블록 내 왼쪽 상단
           break;
         }
@@ -66,6 +68,7 @@ const Home = () => {
     ) {
       c2 = c2 - 1;
     }
+    console.log(r1, c1, r2, c2);
 
     setItemsArr((prev) => {
       const newArr = prev.map((row) => [...row]); // 깊은 복사
@@ -77,7 +80,9 @@ const Home = () => {
       if (itemToMove.type === 1) {
         // over된 row의 모든 column에 null 삽입
         for (let i = 0; i < itemsArr.length; i++) {
-          newArr[i].splice(r1, 0, null);
+          if (Math.floor(itemsArr[i][r1]?.location ?? -1) / 2 === 0)
+            newArr[i].splice(r1, 0, null);
+          else newArr[i].splice(r1 + 1, 0, null);
         }
         // 새 위치에 삽입
         newArr[c2].splice(r2, 1, itemToMove);
@@ -94,7 +99,7 @@ const Home = () => {
         }
         // 새 위치에 삽입
         newArr[c2].splice(r2, 1, itemToMove);
-        newArr[c2].splice(r2 + 1, 1, itemToMove);
+        newArr[c2].splice(r2 + 1, 1, { ...itemToMove, location: 2 });
       }
       // 2*1
       else if (itemToMove.type === 3) {
@@ -110,7 +115,7 @@ const Home = () => {
         }
         // 새 위치에 삽입
         newArr[c2].splice(r2, 1, itemToMove);
-        newArr[c2 + 1].splice(r2, 1, itemToMove);
+        newArr[c2 + 1].splice(r2, 1, { ...itemToMove, location: 1 });
       }
       // 2*2
       else {
@@ -129,9 +134,9 @@ const Home = () => {
         }
         // 새 위치에 삽입
         newArr[c2].splice(r2, 1, itemToMove);
-        newArr[c2 + 1].splice(r2, 1, itemToMove);
-        newArr[c2].splice(r2 + 1, 1, itemToMove);
-        newArr[c2 + 1].splice(r2 + 1, 1, itemToMove);
+        newArr[c2 + 1].splice(r2, 1, { ...itemToMove, location: 1 });
+        newArr[c2].splice(r2 + 1, 1, { ...itemToMove, location: 2 });
+        newArr[c2 + 1].splice(r2 + 1, 1, { ...itemToMove, location: 3 });
       }
 
       return newArr;
@@ -144,12 +149,12 @@ const Home = () => {
           <div key={i} className="flex flex-col gap-10">
             {items.map((v, i2) => (
               <div key={i2} className="w-200 h-200 relative">
-                <Droppable id={`${i}-${i2}`} />
+                <Droppable id={`${i}-${i2}`} item={v} />
                 {v && <Draggable item={v}></Draggable>}
               </div>
             ))}
             <div className="w-200 h-200 relative">
-              <Droppable id={`${i}-${items.length}`} />
+              <Droppable id={`${i}-${items.length}`} item={null} />
             </div>
           </div>
         ))}

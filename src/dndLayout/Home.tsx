@@ -49,29 +49,12 @@ const Home = () => {
     }
     if (r1 === -1 || c1 === -1) return;
 
-    let [c2, r2] = over.id.toString().split('-').map(Number);
-    if (
-      itemsArr[c2 - 1] &&
-      itemsArr[c2 - 1][r2 - 1] &&
-      itemsArr[c2 - 1][r2 - 1]?.id === itemsArr[c2][r2]?.id
-    ) {
-      [c2, r2] = [c2 - 1, r2 - 1];
-    } else if (
-      itemsArr[c2][r2 - 1] &&
-      itemsArr[c2][r2 - 1]?.id === itemsArr[c2][r2]?.id
-    ) {
-      r2 = r2 - 1;
-    } else if (
-      itemsArr[c2 - 1] &&
-      itemsArr[c2 - 1][r2] &&
-      itemsArr[c2 - 1][r2]?.id === itemsArr[c2][r2]?.id
-    ) {
-      c2 = c2 - 1;
-    }
-    console.log(r1, c1, r2, c2);
+    const [c2, r2] = over.id.toString().split('-').map(Number);
 
     setItemsArr((prev) => {
-      const newArr = prev.map((row) => [...row]); // 깊은 복사
+      const newArr = prev.map((row) =>
+        row.map((item) => (item ? { ...item } : item)),
+      );
 
       const itemToMove = newArr[c1][r1]; // 이동할 아이템
       if (!itemToMove) return newArr;
@@ -79,10 +62,10 @@ const Home = () => {
       // 1*1
       if (itemToMove.type === 1) {
         // over된 row의 모든 column에 null 삽입
-        for (let i = 0; i < itemsArr.length; i++) {
-          if (Math.floor(itemsArr[i][r1]?.location ?? -1) / 2 === 0)
+        for (let i = 0; i < newArr.length; i++) {
+          if (Math.floor((newArr[i][r1]?.location ?? -1) / 2) === 0) {
             newArr[i].splice(r1, 0, null);
-          else newArr[i].splice(r1 + 1, 0, null);
+          } else newArr[i].splice(r1 + 1, 0, null);
         }
         // 새 위치에 삽입
         newArr[c2].splice(r2, 1, itemToMove);
@@ -93,7 +76,7 @@ const Home = () => {
         newArr[c1].splice(r1 + 1, 1, null);
 
         // over된 row의 모든 column에 null 삽입
-        for (let i = 0; i < itemsArr.length; i++) {
+        for (let i = 0; i < newArr.length; i++) {
           newArr[i].splice(r1, 0, null);
           newArr[i].splice(r1, 0, null);
         }
@@ -104,13 +87,13 @@ const Home = () => {
       // 2*1
       else if (itemToMove.type === 3) {
         // 마지막 column은 이동 못함
-        if (c2 === itemsArr.length - 1) return newArr;
+        if (c2 === newArr.length - 1) return newArr;
 
         // 같이 이동하는 블록 제거
         newArr[c1 + 1].splice(r1, 1, null);
 
         // over된 row의 모든 column에 null 삽입
-        for (let i = 0; i < itemsArr.length; i++) {
+        for (let i = 0; i < newArr.length; i++) {
           newArr[i].splice(r1, 0, null);
         }
         // 새 위치에 삽입
@@ -120,7 +103,7 @@ const Home = () => {
       // 2*2
       else {
         // 마지막 column은 이동 못함
-        if (c2 === itemsArr.length - 1) return newArr;
+        if (c2 === newArr.length - 1) return newArr;
 
         // 같이 이동하는 블록 제거
         newArr[c1 + 1].splice(r1, 1, null);
@@ -128,7 +111,7 @@ const Home = () => {
         newArr[c1 + 1].splice(r1 + 1, 1, null);
 
         // over된 row의 모든 column에 null 삽입
-        for (let i = 0; i < itemsArr.length; i++) {
+        for (let i = 0; i < newArr.length; i++) {
           newArr[i].splice(r1, 0, null);
           newArr[i].splice(r1, 0, null);
         }
@@ -138,6 +121,75 @@ const Home = () => {
         newArr[c2].splice(r2 + 1, 1, { ...itemToMove, location: 2 });
         newArr[c2 + 1].splice(r2 + 1, 1, { ...itemToMove, location: 3 });
       }
+
+      // 채울 수 있는 null 채우기
+      const moveUp = (): void => {
+        let line = 1;
+        while (line < 10) {
+          let exist = false;
+          for (let i = 0; i < newArr.length; i++) {
+            if (line < newArr[i].length) {
+              exist = true;
+              const nowType = newArr[i][line]?.type;
+              const nowLoction = newArr[i][line]?.location;
+              // 1*1, 1*2
+              if (nowType === 1 || (nowType === 2 && nowLoction === 0)) {
+                let _line = line - 1;
+                while (_line >= 0 && !newArr[i][_line]) {
+                  _line--;
+                }
+                if (_line < line - 1) {
+                  newArr[i][_line + 1] = newArr[i][line];
+                  newArr[i][line] = null;
+                  if (nowType === 2) {
+                    newArr[i][_line + 2] = newArr[i][line + 1];
+                    newArr[i][line + 1] = null;
+                  }
+                }
+              }
+              // 2*1, 2*2
+              else if (
+                (nowType === 3 && nowLoction === 0) ||
+                (nowType === 4 && nowLoction === 0)
+              ) {
+                let _line = line - 1;
+                while (
+                  _line >= 0 &&
+                  !newArr[i][_line] &&
+                  !newArr[i + 1][_line]
+                ) {
+                  _line--;
+                }
+
+                if (_line < line - 1) {
+                  newArr[i][_line + 1] = newArr[i][line];
+                  newArr[i][line] = null;
+                  newArr[i + 1][_line + 1] = newArr[i + 1][line];
+                  newArr[i + 1][line] = null;
+                  if (nowType === 4) {
+                    newArr[i][_line + 2] = newArr[i][line + 1];
+                    newArr[i][line + 1] = null;
+                    newArr[i + 1][_line + 2] = newArr[i + 1][line + 1];
+                    newArr[i + 1][line + 1] = null;
+                  }
+                }
+              }
+            }
+          }
+          if (!exist) break;
+          line++;
+        }
+
+        for (let i = 0; i < newArr.length; i++) {
+          for (let j = newArr[i].length - 1; j >= 0; j--) {
+            if (newArr[i][j] !== null) {
+              newArr[i] = newArr[i].slice(0, j + 1);
+              break;
+            }
+          }
+        }
+      };
+      moveUp();
 
       return newArr;
     });

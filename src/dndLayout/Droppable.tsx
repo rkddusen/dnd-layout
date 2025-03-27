@@ -16,23 +16,28 @@ const Droppable = ({ id, item }: DroppableProps) => {
   });
 
   const style = {
+    height: '100%',
     width:
       item && item.type / 2 > 1 && item.location === 0
         ? 'calc(200% + 10px)'
         : '100%',
-    height:
-      item && item.type % 2 === 0 && item.location === 0
-        ? 'calc(200% + 10px)'
-        : '100%',
+    // height:
+    //   item && item.type % 2 === 0 && item.location === 0
+    //     ? 'calc(200% + 10px)'
+    //     : '100%',
   };
 
   return (
-    // 드랍 가능한 영역을 설정하는 div
-    <div
-      ref={setNodeRef}
-      style={style}
-      className="rounded-20 absolute z-0 w-200 h-200"
-    ></div>
+    <>
+      {(!item || item?.location === 0 || item?.location === 1) && (
+        // 드랍 가능한 영역을 설정하는 div
+        <div
+          ref={setNodeRef}
+          style={style}
+          className="rounded-20 absolute z-0"
+        ></div>
+      )}
+    </>
   );
 };
 
